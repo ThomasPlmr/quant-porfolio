@@ -18,8 +18,6 @@ def PredictPrice2025(Month):
 
     x = MonthData['Year'].values.reshape(-1, 1)     # MonthData['Year/Prices'].values takes all historical prices from input month, puts in array
     y = MonthData['Prices'].values                  # Reshape(-1, 1) converts [2020, 2021, 2022] into [[2020], [2021], [2022]], because sklearns linear regression requires 2D input array to work
-    print("x:", x)
-    print("y:", y)
 
     Model = LinearRegression()
     Model.fit(x, y)
