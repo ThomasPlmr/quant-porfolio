@@ -1,2 +1,3 @@
 # quant-porfolio
-Some side projects to test models
+
+Some projects along with virtual work experience questions.
