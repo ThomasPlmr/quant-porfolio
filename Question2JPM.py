@@ -55,7 +55,7 @@ def ContractProfit(InjectionDate, WithdrawalDate, DailyInjectionRate, MaxStorage
     # In this line I assume storage payment is on first of every month. Rather than actual days spent in storage
     Returns = Returns - StorageMonthlyCost*(Month2-Month1) - (MaxStorageVolume/DailyInjectionRate)*2*InjectionCostPerDay - (BaseTransportCost)*2
 
-    # Didn't use variable 'profit' becuase we may lose money.
+    # Didn't use variable name 'profit' becuase we may lose money.
     return Returns
 
 InputDate1 = input("Enter injection date in format year-month-date:\n")
