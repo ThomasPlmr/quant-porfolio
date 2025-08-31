@@ -1,0 +1,80 @@
+import yfinance as yf
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+import os
+os.system('cls')
+
+today_str = datetime.now().strftime('%Y-%m-%d')
+data = yf.download("AAPL", start="2022-01-01", end=today_str, interval="1d")
+data['log_returns'] = np.log(data['Close'] / data['Close'].shift(1))
+DailyVolatility = data['log_returns'].tail(252).std()
+
+Maturity = 0.25 # which is 3 months in terms of years
+r = 0.05 # roughly 5% interest rate in US
+
+sigma = math.sqrt(252) * DailyVolatility
+s = float(data['Close'].iloc[-1])
+k = s
+
+def OptionPrice(s, k, t, r, sig):
+
+    def N(i):
+        return (0.5 * (1 + math.erf(i / math.sqrt(2))))
+
+    d1 = (math.log(s/k) + (r + (sig**2)/2)*t) / (sig*math.sqrt(t))
+    d2 = d1 - sig*math.sqrt(t)
+
+    price = (s * N(d1)) - (k * math.exp(-r * t) * N(d2))
+    
+    return price
+
+
+Price = OptionPrice(s, k, Maturity, r, sigma)
+print("-------------------")
+print(Price)
+print("-------------------")
+
+
+ticker = yf.Ticker("AAPL")
+
+ExpiryDates = ticker.options
+#print(f"Available expiration dates: {ExpiryDates}")
+First = ExpiryDates[0]
+
+FullChain = ticker.option_chain(First)
+calls = FullChain.calls
+print(calls)
+
+ExpiryTime = datetime.strptime(First, '%Y-%m-%d')
+DaysTillExpired = (ExpiryTime - datetime.now()).days
+TimeInMarket = DaysTillExpired / 365.0 # to get into years
+
+ModelPrices = []
+MarketPrices = []
+Strikes = []
+
+for index, row in calls.iterrows(): # go through market data
+    StrikePrice = row['strike']
+    MarketPrice = row['lastPrice']
+
+    PersonalOptionPrice = OptionPrice(s, StrikePrice, TimeInMarket, r, sigma)
+    
+    # store results in arr
+    Strikes.append(StrikePrice)
+    MarketPrices.append(MarketPrice)
+    ModelPrices.append(PersonalOptionPrice)
+
+# plot results
+plt.figure(figsize=(12, 7))
+plt.plot(Strikes, MarketPrices, 'o-', label='Market Prices')
+plt.plot(Strikes, ModelPrices, 'x-', label='Black-Scholes Prices')
+
+plt.xlabel("Strike Price (K)")
+plt.ylabel("Call Option Price")
+plt.title(f"Market Price vs. Black-Scholes Model for AAPL (Expiry: {First})")
+plt.legend()
+plt.grid(True)
+plt.show()
