@@ -1,3 +1,6 @@
+# A first look at using the Black Scholes model to price real options from live market data for a stock of choice. When ran you will see a visualisation
+# of what the real option price is in comparison to the Theoretical one from our model.
+
 import yfinance as yf
 import math
 import numpy as np
