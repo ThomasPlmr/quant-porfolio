@@ -10,8 +10,10 @@ from datetime import datetime
 import os
 os.system('cls')
 
+stock = "PLTR"
+
 today_str = datetime.now().strftime('%Y-%m-%d')
-data = yf.download("AAPL", start="2022-01-01", end=today_str, interval="1d")
+data = yf.download(stock, start="2022-01-01", end=today_str, interval="1d")
 data['log_returns'] = np.log(data['Close'] / data['Close'].shift(1))
 DailyVolatility = data['log_returns'].tail(252).std()
 
@@ -41,7 +43,7 @@ print(Price)
 print("-------------------")
 
 
-ticker = yf.Ticker("AAPL")
+ticker = yf.Ticker(stock)
 
 ExpiryDates = ticker.options
 #print(f"Available expiration dates: {ExpiryDates}")
