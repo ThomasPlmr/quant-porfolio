@@ -1,3 +1,5 @@
+# simulating pair trading using python, did adf and cointegration tests to measure risk, found sharpe ratio and finally returned PnL over given time frame
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -167,5 +169,6 @@ def SummaryPlot():
     plt.legend()
     plt.grid(True)
     plt.show()
+
 
 SummaryPlot()
